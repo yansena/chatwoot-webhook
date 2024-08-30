@@ -8,7 +8,7 @@ const app = express();
 app.use(express.json());
 app.use(logger);
 
-app.use("/webhook", webhookRoutes);
+app.use("/api", webhookRoutes);
 
 app.listen(config.port, () => {
   console.log(`Server is running on port ${config.port}`);
