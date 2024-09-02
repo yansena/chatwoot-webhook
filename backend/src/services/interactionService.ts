@@ -1,31 +1,19 @@
 import axios from "axios";
 import { config } from "../config";
 import { createInteractiveMessage } from "../utils/messageUtils";
+import { menuService } from "./menuService";
+import { menuResponseService } from "./menuResponseService";
+
+const menu_id = 11;
 
 export const interactionService = {
   async proccessInteracion(payload: any) {
+
     const event = payload.event;
 
     if (event === "conversation_created") {
       const conversationId = payload.id;
-
-      const menu = createInteractiveMessage(
-        "input_select",
-        "Bem-vindo! Como posso ajudar?",
-        [
-          { title: "Bonus Roll-over Cassino/Indicação", value: "bonus" },
-          { title: "Roll-over Primeiro Deposito", value: "rollover_saldo" },
-          { title: "Roll-over Primeiro Deposito", value: "rollover_saldo" },
-          {
-            title: "Bonus Roll-over Apostas esportivas",
-            value: "rollover_apostas",
-          },
-          { title: "O que é roll-over", value: "rollover" },
-          { title: "Limite de deposito/saque", value: "limite_deposito" },
-          { title: "Nossos Eventos", value: "eventos" },
-        ],
-      );
-
+      const menu = await menuService.getMenu(menu_id);
       return await this.sendMessage(conversationId, menu);
     }
 
@@ -38,24 +26,8 @@ export const interactionService = {
         payload.content_attributes.submitted_values[0].value;
       const conversationId = payload.conversation.id;
 
-      if (selectedOption === "rollover") {
-      }
+
       switch (selectedOption) {
-        case "bonus":
-          await this.sendMessage(conversationId, {
-            content: "O bonus é...",
-          });
-          return await this.secondMenu(conversationId);
-        case "rollover_saldo":
-          await this.sendMessage(conversationId, {
-            content: "O rollover é...",
-          });
-          return await this.secondMenu(conversationId);
-        case "saldo":
-          await this.sendMessage(conversationId, {
-            content: "O saldo é...",
-          });
-          return await this.secondMenu(conversationId);
         case "falar_atendente":
           return await this.assignToTeam(conversationId);
 
@@ -63,27 +35,14 @@ export const interactionService = {
           return await this.closeConversation(conversationId);
 
         case "retornar_menu":
-          const menu = createInteractiveMessage(
-            "input_select",
-            "Como posso ajudar?",
-            [
-              { title: "Bonus Roll-over Cassino/Indicação", value: "bonus" },
-              { title: "Roll-over Primeiro Deposito", value: "rollover_saldo" },
-              {
-                title: "Bonus Roll-over Apostas esportivas",
-                value: "rollover_apostas",
-              },
-              { title: "O que é roll-over", value: "rollover" },
-              { title: "Limite de deposito/saque", value: "limite_deposito" },
-              { title: "Nossos Eventos", value: "eventos" },
-            ],
-          );
+          const menu = await menuService.getMenu(menu_id);
           return await this.sendMessage(conversationId, menu);
-        default:
-          return await this.sendMessage(conversationId, {
-            content: "Não entendi, pode repetir?",
-          });
       }
+
+      const response = await menuResponseService.getResponse(selectedOption, menu_id);
+      await this.sendMessage(conversationId, response);
+
+      return await this.secondMenu(conversationId);
     }
   },
 

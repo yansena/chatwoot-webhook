@@ -1,54 +1,102 @@
-import { Request, Response } from "express";
-import axios from "axios";
-import { config } from "../config";
-import { CreatedChatProps } from "../interfaces";
+import { Request, Response } from 'express';
+import { menuService } from '../services/menuService';
 
-export const menuController = async (
-  req: Request,
-  res: Response,
-): Promise<void> => {
-  try {
-    console.log("Webhook received:", JSON.stringify(req.body, null, 2));
+export const menuController = {
+  async createMenu(req: Request, res: Response) {
+    try {
 
-    const data = req.body as CreatedChatProps;
-    const messageContent = data.messages[0].content;
-    const conversationId = data.id;
+      const { name, content, type, options } = req.body;
+      if (!name || !content || !options || !Array.isArray(options)) {
+        return res.status(400).json({ message: 'Parâmetros inválidos' });
+      }
 
-    console.log({ messageContent });
+      const existingMenu = await menuService.getMenuByName(name);
+      if (existingMenu) {
+        return res.status(400).json({ message: 'Menu com esse nome já existe' });
+      }
 
-    // https://app.chatwoot.com/api/v1/accounts/{account_id}/conversations/{conversation_id}/messages
+      const menu = await menuService.createMenu({ name, content, type, options });
 
-    axios.post(
-      `${config.chatwootApiUrl}/${config.chatwootAccountId}/conversations/${conversationId}/messages`,
-      {
-        content: "Selecione uma opção a baixo.",
-        content_type: "input_select",
-        content_attributes: {
-          items: [
-            { title: "Bonus Roll-over Cassino/Indicação", value: "bonus" },
-            { title: "Roll-over Primeiro Deposito", value: "rollover_saldo" },
-            {
-              title: "Bonus Roll-over Apostas esportivas",
-              value: "rollover_apostas",
-            },
-            { title: "O que é roll-over", value: "rollover" },
-            { title: "Limite de deposito/saque", value: "limite_deposito" },
-            { title: "Nossos Eventos", value: "eventos" },
-          ],
-        },
-        private: false,
-      },
-      {
-        headers: {
-          api_access_token: config.chatwootApiToken,
-          "Content-Type": "application/json",
-        },
-      },
-    );
+      const responseData = {
+        id: menu.id,
+        name: menu.name,
+        content: menu.content,
+        type: menu.type,
+        options: menu.options.map(option => ({
+          id: option.id,
+          title: option.title,
+          value: option.value,
+          response: {
+            id: option.menuResponse.id,
+            responseType: option.menuResponse.responseType,
+            content: option.menuResponse.content,
+          }
+        }))
+      };
 
-    res.status(200).send("Mensagem enviada com sucesso");
-  } catch (err) {
-    console.error("Error processing webhook:", err);
-    res.status(500).send("Erro ao enviar mensagem");
+
+      return res.status(201).json(responseData);
+    } catch (error) {
+      console.error('Error creating menu:', error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  },
+
+  async getMenu(req: Request, res: Response) {
+    try {
+      const id = parseInt(req.params.id, 10);
+      const menu = await menuService.getMenu(id);
+      if (menu) {
+        res.status(200).json(menu);
+      } else {
+        res.status(404).json({ message: 'Menu not found' });
+      }
+    } catch (error) {
+      console.error('Error fetching menu:', error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  },
+
+  async updateMenu(req: Request, res: Response) {
+    try {
+      const id = parseInt(req.params.id, 10);
+      const { name, content, type, options } = req.body;
+
+      const updatedMenu = await menuService.updateMenu(id, { name, content, type, options });
+      if (updatedMenu) {
+        res.status(200).json(updatedMenu);
+      } else {
+        res.status(404).json({ message: 'Menu not found' });
+      }
+    } catch (error) {
+      console.error('Error updating menu:', error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  },
+
+
+  async deleteMenu(req: Request, res: Response) {
+    try {
+      const id = parseInt(req.params.id, 10);
+      const success = await menuService.deleteMenu(id);
+      if (success) {
+        res.status(200).json({ message: 'Menu deletado com sucesso' });
+      } else {
+        res.status(404).json({ message: 'Menu not found' });
+      }
+    } catch (error) {
+      console.error('Error deleting menu:', error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  },
+
+  async getAllMenus(req: Request, res: Response) {
+    try {
+      const menus = await menuService.getAllMenus();
+      res.status(200).json(menus);
+    } catch (error) {
+      console.error('Error fetching menus:', error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
   }
-};
+}
