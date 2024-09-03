@@ -3,6 +3,7 @@ import { DataSource } from 'typeorm';
 import { Menu } from './entities/Menu';
 import { MenuOption } from './entities/MenuOption';
 import { MenuResponses } from './entities/MenuResponses';
+import { User } from './entities/User';
 
 // Configuração do DataSource
 export const AppDataSource = new DataSource({
@@ -14,7 +15,7 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_DATABASE,
   synchronize: true,  // Use migrações para produção
   logging: false,
-  entities: [Menu, MenuOption, MenuResponses],
+  entities: [Menu, MenuOption, MenuResponses, User],
   migrations: [],
   subscribers: [],
 });

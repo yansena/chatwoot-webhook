@@ -4,6 +4,7 @@ import { createConnection } from 'typeorm';
 
 import { config } from "./config";
 import { logger } from "./middleware/logger";
+import { authenticateJWT } from './middleware/auth';
 import webhookRoutes from "./routes/webhook";
 import menuRoutes from "./routes/menuRoutes;";
 import { AppDataSource } from './data-source';
