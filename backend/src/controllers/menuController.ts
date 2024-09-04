@@ -1,28 +1,34 @@
-import { Request, Response } from 'express';
-import { menuService } from '../services/menuService';
+import { Request, Response } from "express";
+import { menuService } from "../services/menuService";
 
 export const menuController = {
   async createMenu(req: Request, res: Response) {
     try {
-
       const { name, content, type, options } = req.body;
       if (!name || !content || !options || !Array.isArray(options)) {
-        return res.status(400).json({ message: 'Parâmetros inválidos' });
+        return res.status(400).json({ message: "Parâmetros inválidos" });
       }
 
       const existingMenu = await menuService.getMenuByName(name);
       if (existingMenu) {
-        return res.status(400).json({ message: 'Menu com esse nome já existe' });
+        return res
+          .status(400)
+          .json({ message: "Menu com esse nome já existe" });
       }
 
-      const menu = await menuService.createMenu({ name, content, type, options });
+      const menu = await menuService.createMenu({
+        name,
+        content,
+        type,
+        options,
+      });
 
       const responseData = {
         id: menu.id,
         name: menu.name,
         content: menu.content,
         type: menu.type,
-        options: menu.options.map(option => ({
+        options: menu.options.map((option) => ({
           id: option.id,
           title: option.title,
           value: option.value,
@@ -30,15 +36,14 @@ export const menuController = {
             id: option.menuResponse.id,
             responseType: option.menuResponse.responseType,
             content: option.menuResponse.content,
-          }
-        }))
+          },
+        })),
       };
-
 
       return res.status(201).json(responseData);
     } catch (error) {
-      console.error('Error creating menu:', error);
-      res.status(500).json({ message: 'Internal Server Error' });
+      console.error("Error creating menu:", error);
+      res.status(500).json({ message: "Internal Server Error" });
     }
   },
 
@@ -49,11 +54,11 @@ export const menuController = {
       if (menu) {
         res.status(200).json(menu);
       } else {
-        res.status(404).json({ message: 'Menu not found' });
+        res.status(404).json({ message: "Menu not found" });
       }
     } catch (error) {
-      console.error('Error fetching menu:', error);
-      res.status(500).json({ message: 'Internal Server Error' });
+      console.error("Error fetching menu:", error);
+      res.status(500).json({ message: "Internal Server Error" });
     }
   },
 
@@ -62,31 +67,35 @@ export const menuController = {
       const id = parseInt(req.params.id, 10);
       const { name, content, type, options } = req.body;
 
-      const updatedMenu = await menuService.updateMenu(id, { name, content, type, options });
+      const updatedMenu = await menuService.updateMenu(id, {
+        name,
+        content,
+        type,
+        options,
+      });
       if (updatedMenu) {
         res.status(200).json(updatedMenu);
       } else {
-        res.status(404).json({ message: 'Menu not found' });
+        res.status(404).json({ message: "Menu not found" });
       }
     } catch (error) {
-      console.error('Error updating menu:', error);
-      res.status(500).json({ message: 'Internal Server Error' });
+      console.error("Error updating menu:", error);
+      res.status(500).json({ message: "Internal Server Error" });
     }
   },
-
 
   async deleteMenu(req: Request, res: Response) {
     try {
       const id = parseInt(req.params.id, 10);
       const success = await menuService.deleteMenu(id);
       if (success) {
-        res.status(200).json({ message: 'Menu deletado com sucesso' });
+        res.status(200).json({ message: "Menu deletado com sucesso" });
       } else {
-        res.status(404).json({ message: 'Menu not found' });
+        res.status(404).json({ message: "Menu not found" });
       }
     } catch (error) {
-      console.error('Error deleting menu:', error);
-      res.status(500).json({ message: 'Internal Server Error' });
+      console.error("Error deleting menu:", error);
+      res.status(500).json({ message: "Internal Server Error" });
     }
   },
 
@@ -95,8 +104,18 @@ export const menuController = {
       const menus = await menuService.getAllMenus();
       res.status(200).json(menus);
     } catch (error) {
-      console.error('Error fetching menus:', error);
-      res.status(500).json({ message: 'Internal Server Error' });
+      console.error("Error fetching menus:", error);
+      res.status(500).json({ message: "Internal Server Error" });
     }
-  }
-}
+  },
+
+  async getLatestMenus(req: Request, res: Response) {
+    try {
+      const menus = await menuService.getLatestMenu();
+      res.status(200).json(menus);
+    } catch (error) {
+      console.error("Error fetching menus:", error);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  },
+};

@@ -1,7 +1,7 @@
 "use client"
+
 import { Cross2Icon, Pencil1Icon } from "@radix-ui/react-icons";
 import { Button } from "../ui/button";
-
 
 export function MenuTable() {
   return (
