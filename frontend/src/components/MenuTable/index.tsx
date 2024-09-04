@@ -10,7 +10,7 @@ export function MenuTable() {
         <h3 className="text-2xl  font-bold">Menus</h3>
         <Button className="bg-green-400 text-white">Novo Menu</Button>
       </div>
-      <table className="rounded-lg border border-1 border-white w-full mt-4">
+      <table className="rounded-2xl border border-1 border-white w-full mt-4">
         <thead>
           <tr className=" border border-1 border-white text-center" >
             <th>Id</th>
