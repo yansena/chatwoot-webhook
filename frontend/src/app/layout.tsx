@@ -2,7 +2,11 @@ import type { Metadata } from "next";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import './assets/css/tailwind.css'
-// import "./assets/css/materialdesignicons.min.css"
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
+
 import { Providers } from "./providers";
 
 import Header from "@/components/Header";
@@ -22,10 +26,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark scroll-smooth">
-      <body className={twMerge(inter.className, plusJakarta.className, 'text-base text-slate-900 dark:text-white dark:bg-slate-900')}>
-        <Header />
-        {children}
+    <html lang="en" className="scroll-smooth">
+      <body className={twMerge(inter.className, plusJakarta.className, 'text-base text-slate-900 dark:text-white bg-slate-50')}>
+        <Providers>
+          <Header />
+          {children}
+        </Providers>
       </body>
     </html>
   );

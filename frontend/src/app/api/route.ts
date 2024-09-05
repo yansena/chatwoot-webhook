@@ -11,6 +11,11 @@ export const fetchMenus = async () => {
   return data;
 };
 
+export const fetchMenuById = async (id: number) => {
+  const { data } = await api.get(`/menu/${id}`);
+  return data;
+};
+
 export const createMenu = async (newMenu: MenuItem) => {
   const { data } = await api.post("/menu/create", newMenu);
   return data;

@@ -14,7 +14,7 @@ export const useMenus = () => {
     error: menuError,
     isLoading: menuLoading,
   } = useQuery({
-    queryKey: ["menus"],
+    queryKey: ["menu"],
     queryFn: fetchLastMenu,
   });
 
@@ -23,7 +23,7 @@ export const useMenus = () => {
     error,
     isLoading,
   } = useQuery({
-    queryKey: ["menus"],
+    queryKey: ["allMenus"],
     queryFn: fetchMenus,
   });
 

@@ -9,13 +9,6 @@ export const menuController = {
         return res.status(400).json({ message: "Parâmetros inválidos" });
       }
 
-      const existingMenu = await menuService.getMenuByName(name);
-      if (existingMenu) {
-        return res
-          .status(400)
-          .json({ message: "Menu com esse nome já existe" });
-      }
-
       const menu = await menuService.createMenu({
         name,
         content,
@@ -43,6 +36,22 @@ export const menuController = {
       return res.status(201).json(responseData);
     } catch (error) {
       console.error("Error creating menu:", error);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  },
+
+  async getMenuIdDetails(req: Request, res: Response) {
+    console.log("getMenuIdDetails");
+    try {
+      const id = parseInt(req.params.id, 10);
+      const menu = await menuService.getMenuIdDetail(id);
+      if (menu) {
+        res.status(200).json(menu);
+      } else {
+        res.status(404).json({ message: "Menu not found" });
+      }
+    } catch (error) {
+      console.error("Error fetching menu:", error);
       res.status(500).json({ message: "Internal Server Error" });
     }
   },

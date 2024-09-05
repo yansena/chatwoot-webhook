@@ -1,5 +1,6 @@
 import "reflect-metadata";
 import express from "express";
+import cors from "cors";
 import { createConnection } from "typeorm";
 
 import { config } from "./config";
@@ -11,6 +12,13 @@ import { AppDataSource } from "./data-source";
 
 const app = express();
 
+const corsOptions = {
+  origin: "http://localhost:3000", // the frontend URL
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(logger);
 

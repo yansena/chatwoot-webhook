@@ -7,6 +7,8 @@ router.get("/", menuController.getLatestMenus);
 
 router.get("/all", menuController.getAllMenus);
 
+router.get("/detail/:id", menuController.getMenuIdDetails);
+
 // Criação de um novo menu
 router.post("/create", menuController.createMenu);
 

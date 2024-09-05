@@ -3,6 +3,7 @@ import { MenuOption } from "../entities/MenuOption";
 import { AppDataSource } from "../data-source";
 import { MenuResponses } from "../entities/MenuResponses";
 import { CreateMenuDTO, ReturnMenuDTO } from "../dtos";
+import { ExpandedMenuDTO } from "../dtos/menuDto";
 
 export const menuService = {
   async createMenu(data: CreateMenuDTO): Promise<Menu> {
@@ -26,6 +27,7 @@ export const menuService = {
 
       const response = new MenuResponses();
       response.responseType = optionData.response.responseType;
+
       if (optionData.response.responseType === "article") {
         response.content = {
           items: optionData.response.content.items.map((item: any) => ({
@@ -37,6 +39,7 @@ export const menuService = {
       } else {
         response.content = optionData.response.content;
       }
+
       response.menuOption = savedOtion;
       response.value = savedOtion.value;
 
@@ -49,6 +52,16 @@ export const menuService = {
     }
 
     return await menuRepository.save(menu);
+  },
+
+  async getMenuIdDetail(id: number): Promise<Menu | null> {
+    const menuRepository = AppDataSource.getRepository(Menu);
+    const menu = await menuRepository.findOne({
+      where: { id },
+      relations: ["options", "options.menuResponse"],
+    });
+
+    return menu;
   },
 
   async getMenu(id: number): Promise<ReturnMenuDTO | null> {
@@ -75,13 +88,6 @@ export const menuService = {
     };
 
     return transformedMenu;
-  },
-
-  async getMenuByName(name: string): Promise<Menu | null> {
-    const menuRepository = AppDataSource.getRepository(Menu);
-    return await menuRepository.findOne({
-      where: { name },
-    });
   },
 
   async updateMenu(
