@@ -3,7 +3,7 @@ import { menuController } from "../controllers/menuController";
 
 const router = Router();
 
-router.get("/", menuController.getLatestMenus);
+router.get("/", menuController.getLatestMenu);
 
 router.get("/all", menuController.getAllMenus);
 

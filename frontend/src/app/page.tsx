@@ -1,4 +1,4 @@
-import { MenuTable } from "@/components/MenuTable";
+import { MenuCards } from "@/components/MenuCards";
 
 export default function Home() {
   return (
@@ -7,7 +7,7 @@ export default function Home() {
         <h1 className="text-3xl  font-bold">Olá bem vindo ao Webhook do ImpulseChat</h1>
         <span>A baixo se encontram os ultimos menu interativos cadastrados</span>
       </div >
-      <MenuTable />
+      <MenuCards />
     </main >
   );
 }

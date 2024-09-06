@@ -118,7 +118,7 @@ export const menuController = {
     }
   },
 
-  async getLatestMenus(req: Request, res: Response) {
+  async getLatestMenu(req: Request, res: Response) {
     try {
       const menus = await menuService.getLatestMenu();
       res.status(200).json(menus);

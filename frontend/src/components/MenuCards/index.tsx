@@ -1,18 +1,18 @@
 "use client"
 
-import { Pencil1Icon, HamburgerMenuIcon } from "@radix-ui/react-icons";
+import { useContext, useEffect, useState } from "react";
 import CircularProgress from '@mui/material/CircularProgress';
-import { Box, Divider, Modal, Typography } from "@mui/material";
+import { Divider } from "@mui/material";
+import { Pencil1Icon, HamburgerMenuIcon } from "@radix-ui/react-icons";
 
-import { useMenus } from "@/hooks/useMenu";
 import { Button } from "../ui/button";
-
-import { useRouter } from 'next/navigation';
-import { useState } from "react";
 import MenuModal from "./MenuModal";
+import { MenuContext } from "@/context/MenuContext";
 
-export function MenuTable() {
-  const { menus, isLoading, error } = useMenus();
+
+export function MenuCards() {
+  const { state, fetchMenus } = useContext(MenuContext);
+
   const [open, setOpen] = useState(false);
   const [expanded, setExpanded] = useState<{ [key: number]: boolean }>({});
 
@@ -24,13 +24,15 @@ export function MenuTable() {
     }));
   };
 
-  if (isLoading) {
+  if (state.loading) {
     return (
       <div className="flex flex-col justify-center items-center p-32">
         <CircularProgress />
       </div>
     )
   }
+
+
 
   return (
     <div className="mt-2 lg:p-24 md:p-12 sm:p-8">
@@ -41,7 +43,7 @@ export function MenuTable() {
 
 
       <div className="flex flex-row gap-2 mt-4 ">
-        {menus.map((menu: any) => (
+        {state.menus.map((menu: any) => (
           <div
             key={menu.id}
             className={`

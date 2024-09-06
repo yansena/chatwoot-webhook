@@ -1,4 +1,4 @@
-import { MenuItem } from "@/types";
+import { MenuProps } from "@/types";
 import api from "./api";
 
 export const fetchLastMenu = async () => {
@@ -16,8 +16,13 @@ export const fetchMenuById = async (id: number) => {
   return data;
 };
 
-export const createMenu = async (newMenu: MenuItem) => {
+export const createMenu = async (newMenu: MenuProps) => {
   const { data } = await api.post("/menu/create", newMenu);
+  return data;
+};
+
+export const editMenu = async (newMenu: MenuProps) => {
+  const { data } = await api.put("/menu/:id", newMenu);
   return data;
 };
 

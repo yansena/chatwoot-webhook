@@ -1,17 +1,30 @@
-export interface MenuItem {
+enum MessageType {
+  "input_email",
+  "cards",
+  "input_select",
+  "form",
+  "article",
+}
+export interface MenuProps {
+  id: number;
   name: string;
   content: string;
-  type: "input_select"; // Assumindo que o tipo é sempre "input_select"
+  type: MessageType | "input_select"; // Assumindo que o tipo é sempre "input_select"
   options: Option[];
 }
 
 interface Option {
+  id: number;
   title: string;
   value: string;
-  response: Response;
+  menuResponse: MenuResponse;
 }
 
-interface Response {
-  responseType: "text" | "articles"; // Tipos de resposta possíveis
-  content: string;
+interface MenuResponse {
+  id: number;
+  responseType: string;
+  content:
+    | string
+    | { items: { title: string; description: string; link: string }[] };
+  value: string;
 }

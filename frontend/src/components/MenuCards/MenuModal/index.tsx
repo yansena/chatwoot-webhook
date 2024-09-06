@@ -1,5 +1,6 @@
 
-import { fetchMenuById, } from "@/app/api/route";
+import { fetchMenuById, editMenu } from "@/app/api/route";
+import { MenuProps } from "@/types";
 import { Box, Button, Divider, Modal, TextField, Typography } from "@mui/material";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
@@ -22,7 +23,7 @@ const style = {
 };
 
 function MenuModal({ id, open, setOpen }: MenuModalProps) {
-  const [menuData, setMenuData] = useState();
+  const [menuData, setMenuData] = useState<MenuProps>({} as MenuProps);
 
   const {
     data,
@@ -33,19 +34,19 @@ function MenuModal({ id, open, setOpen }: MenuModalProps) {
     queryFn: () => fetchMenuById(Number(id)),
   });
 
-  // const mutation = useMutation({
-  //   mutationFn: updateMenu,
-  //   onSuccess: () => {
-  //     onClose(); // Close modal after successful save
-  //   },
-  // });
+  const mutation = useMutation({
+    mutationFn: editMenu,
+    onSuccess: () => {
+      setOpen(false); // Close modal after successful save
+    },
+  });
 
-  // Function to handle form submission
-  // const handleSave = () => {
-  //   mutation.mutate({ id: menuData.id, data: menuData });
-  // };
 
-  const handleChange = (e) => {
+  const handleSave = () => {
+    mutation.mutate({ ...menuData });
+  };
+
+  const handleChange = (e: any) => {
     const { name, value } = e.target;
     setMenuData((prev) => ({
       ...prev,
@@ -53,7 +54,7 @@ function MenuModal({ id, open, setOpen }: MenuModalProps) {
     }));
   };
 
-  const handleOptionChange = (index, field, value) => {
+  const handleOptionChange = (index: number, field: any, value: any) => {
     const updatedOptions = [...menuData.options];
     updatedOptions[index] = { ...updatedOptions[index], [field]: value };
     setMenuData((prev) => ({ ...prev, options: updatedOptions }));
@@ -67,15 +68,7 @@ function MenuModal({ id, open, setOpen }: MenuModalProps) {
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
-      {/* <Box >
-        <h1 className="text-2xl font-bold mt-10 ml-10">Detalhes do Menu:</h1>
-        <div className="flex flex-col p-12">
-          <div className="flex flex-row gap-4">
-            <span className="text-lg">Menu titulo: </span>
-            <input className="bg-transparent border border-1 rounded-md p-4 w-full border-white" value={data.content} />
-          </div>
-        </div>
-      </Box> */}
+
       <Box sx={style}>
         <Typography variant="h6">Edit Menu</Typography>
 
@@ -138,7 +131,7 @@ function MenuModal({ id, open, setOpen }: MenuModalProps) {
               </div>
             ))}
 
-            <Button onClick={ } variant="contained" color="primary" fullWidth>
+            <Button onClick={handleSave} variant="contained" color="primary" fullWidth>
               Save Changes
             </Button>
           </div>

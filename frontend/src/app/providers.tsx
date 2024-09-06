@@ -1,18 +1,15 @@
 'use client'
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useState } from 'react';
 import { Theme } from '@radix-ui/themes';
-
+import { MenuProvider } from '@/context/MenuContext';
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  const [client] = useState(new QueryClient());
 
   return (
-    <QueryClientProvider client={client}>
+    <MenuProvider>
       <Theme>
         {children}
       </Theme>
-    </QueryClientProvider>
+    </MenuProvider>
   )
 }
