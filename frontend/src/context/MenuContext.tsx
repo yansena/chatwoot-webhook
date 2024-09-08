@@ -6,14 +6,14 @@ import api from "@/app/api/api";
 
 export interface MenuState {
   menus: MenuProps[];
-  selectedMenu: MenuProps | null;
+  selectedMenu: MenuProps;
   loading: boolean;
   error: string | null;
 }
 
 const initialState: MenuState = {
   menus: [],
-  selectedMenu: null,
+  selectedMenu: {} as MenuProps,
   loading: false,
   error: null,
 };
@@ -48,7 +48,7 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
   const fetchMenuById = async (id: number) => {
     dispatch({ type: "GET_MENU_START" });
     try {
-      const { data } = await api.get<MenuProps>(`/menu/${id}`);
+      const { data } = await api.get<MenuProps>(`/menu/detail/${id}`);
       dispatch({ type: 'GET_MENU_SUCCESS', payload: data })
     } catch (error: any) {
       dispatch({ type: "GET_MENU_ERROR", payload: error.message });
@@ -57,7 +57,7 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
 
   const createMenu = async (menu: MenuProps) => {
     try {
-      const { data } = await axios.post<MenuProps>('http://127.0.0.1:3001/api/menu/create', menu);
+      const { data } = await axios.post<MenuProps>('/menu/create', menu);
       dispatch({ type: "ADD_MENU", payload: data });
     } catch (error: any) {
       dispatch({ type: "FETCH_MENUS_ERROR", payload: error.message });
@@ -66,7 +66,7 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
 
   const updateMenu = async (menu: MenuProps) => {
     try {
-      const { data } = await axios.put<MenuProps>(`http://127.0.0.1:3001/api/menu/${menu.id}`, menu);
+      const { data } = await axios.put<MenuProps>(`/menu/${menu.id}`, menu);
       dispatch({ type: "UPDATE_MENU", payload: data });
     } catch (error: any) {
       dispatch({ type: "FETCH_MENUS_ERROR", payload: error.message });

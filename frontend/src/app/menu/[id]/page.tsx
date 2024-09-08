@@ -1,14 +1,9 @@
 'use client'
 
-import { fetchMenuById } from "@/app/api/route";
-import { useQuery } from "@tanstack/react-query";
-import { useParams } from "next/navigation";
 
 
 function MenuDetail() {
-  const { id } = useParams();
 
-  console.log({ id })
 
 
 

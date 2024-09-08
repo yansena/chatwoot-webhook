@@ -11,100 +11,80 @@ import { MenuContext } from "@/context/MenuContext";
 
 
 export function MenuCards() {
-  const { state, fetchMenus } = useContext(MenuContext);
+  const { state, fetchMenus, fetchMenuById } = useContext(MenuContext);
 
   const [open, setOpen] = useState(false);
-  const [expanded, setExpanded] = useState<{ [key: number]: boolean }>({});
 
   // Function to toggle expand/collapse for a specific menu
-  const toggleExpand = (menuId: number) => {
-    setExpanded((prev) => ({
-      ...prev,
-      [menuId]: !prev[menuId], // Toggle the specific menu's expanded state
-    }));
-  };
+  // const toggleExpand = (menuId: number) => {
+  //   setExpanded((prev) => ({
+  //     ...prev,
+  //     [menuId]: !prev[menuId], // Toggle the specific menu's expanded state
+  //   }));
+  // };
+
+  const handleSelectedMenu = (id: number) => {
+    fetchMenuById(id);
+    setOpen(oldState => !oldState);
+  }
+
+  useEffect(() => {
+    fetchMenus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   if (state.loading) {
     return (
-      <div className="flex flex-col justify-center items-center p-32">
+      <div className="flex flex-col items-center justify-center p-32">
         <CircularProgress />
       </div>
     )
   }
 
-
-
   return (
-    <div className="mt-2 lg:p-24 md:p-12 sm:p-8">
+    <div className="mt-2 sm:p-8 md:p-12 lg:p-24">
       <div className="flex flex-row justify-between">
         <h3 className="text-2xl  font-bold">Menus</h3>
         <Button variant={'ghost'} className="bg-green-400 text-white">Novo Menu</Button>
       </div>
 
 
-      <div className="flex flex-row gap-2 mt-4 ">
+      <div className="mt-4 flex flex-row gap-2">
         {state.menus.map((menu: any) => (
           <div
             key={menu.id}
             className={`
-              bg-slate-900
+              overflow-hidden
               rounded-md
-              shadow-md
+              border
+              border-slate-700 bg-slate-900
               text-white
-              border border-1
-              border-slate-700
-              overflow-hidden`}
+              shadow-md`}
 
           >
             <div className="p-4">
-              <div className="flex flex-row gap-4 items-center w-[20vw]">
+              <div className="flex w-[20vw] flex-row items-center gap-4">
                 <HamburgerMenuIcon />
                 <span>{menu.name}</span>
               </div>
-              <Divider className="bg-slate-500 my-2" />
+              <Divider className="my-2 bg-slate-500" />
 
-              <div className="flex flex-row gap-2 my-4 items-center">
+              <div className="my-4 flex flex-row items-center gap-2">
                 <p>Título:</p>
                 <span>{menu.content}</span>
               </div>
             </div>
             <Divider />
-            {expanded[menu.id] && (
-              <div className="mt-4 space-y-2">
-                <div>
-                  <label className="block text-sm font-medium text-gray-400">
-                    Title:
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full mt-1 px-2 py-1 rounded bg-gray-700"
 
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-400">
-                    Options:
-                  </label>
-                  <textarea
-                    className="w-full mt-1 px-2 py-1 rounded bg-gray-700"
-
-                  />
-                </div>
-              </div>
-            )}
             <div>
-              <button onClick={() => setOpen(oldState => !oldState)} className="hover:bg-slate-700/80 font-bold flex flex-row gap-2 items-center justify-center  rounded-b-lg p-4 w-full">
+              <button onClick={() => handleSelectedMenu(menu.id)} className="flex w-full flex-row items-center justify-center gap-2 rounded-b-lg  p-4 font-bold hover:bg-slate-700/80">
                 <Pencil1Icon /> Editar Menu
               </button>
             </div>
             <MenuModal id={menu.id} open={open} setOpen={setOpen} />
           </div>
         ))}
-
-
       </div>
-
-
     </div>
   )
 }
