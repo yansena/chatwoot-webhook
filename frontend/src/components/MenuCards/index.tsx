@@ -14,6 +14,7 @@ export function MenuCards() {
   const { state, fetchMenus, fetchMenuById } = useContext(MenuContext);
 
   const [open, setOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   // Function to toggle expand/collapse for a specific menu
   // const toggleExpand = (menuId: number) => {
@@ -25,7 +26,14 @@ export function MenuCards() {
 
   const handleSelectedMenu = (id: number) => {
     fetchMenuById(id);
+    setIsEditing(true)
     setOpen(oldState => !oldState);
+  }
+
+  const createNewMenu = () => {
+    setIsEditing(false)
+
+    setOpen(oldState => !oldState)
   }
 
   useEffect(() => {
@@ -45,7 +53,7 @@ export function MenuCards() {
     <div className="mt-2 sm:p-8 md:p-12 lg:p-24">
       <div className="flex flex-row justify-between">
         <h3 className="text-2xl  font-bold">Menus</h3>
-        <Button variant={'ghost'} className="bg-green-400 text-white">Novo Menu</Button>
+        <Button className="bg-green-400 text-white hover:bg-green-400/50" onClick={createNewMenu}>Novo Menu</Button>
       </div>
 
 
@@ -81,10 +89,10 @@ export function MenuCards() {
                 <Pencil1Icon /> Editar Menu
               </button>
             </div>
-            <MenuModal id={menu.id} open={open} setOpen={setOpen} />
+            <MenuModal isEditing={isEditing} id={menu.id} open={open} setOpen={setOpen} />
           </div>
         ))}
       </div>
-    </div>
+    </div >
   )
 }

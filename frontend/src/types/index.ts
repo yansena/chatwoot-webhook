@@ -6,7 +6,7 @@ enum MessageType {
   "article",
 }
 export interface MenuProps {
-  id: number;
+  id?: number;
   name: string;
   content: string;
   type: MessageType | "input_select"; // Assumindo que o tipo é sempre "input_select"
@@ -23,8 +23,16 @@ interface Option {
 interface MenuResponse {
   id: number;
   responseType: string;
+  content: any;
+  value: string;
+}
+
+/*
+interface MenuResponse {
+  id: number;
+  responseType: string;
   content:
     | string
     | { items: { title: string; description: string; link: string }[] };
   value: string;
-}
+} */
