@@ -21,7 +21,9 @@ function MenuModal({ open, setOpen, isEditing = false }: MenuModalProps) {
     options: [],
     type: 'input_select'
   });
-  const { state } = useContext(MenuContext)
+  const { state } = useContext(MenuContext);
+
+  console.log({ menuData });
 
   const handleSubmit = (values: MenuProps) => {
     if (isEditing) {
@@ -90,7 +92,7 @@ function MenuModal({ open, setOpen, isEditing = false }: MenuModalProps) {
     // <Transition appear show={open} as={Fragment}>
     <Modal
       open={open}
-      className="h-[80vh] max-h-[80vh] w-[70vw] self-center justify-self-center overflow-y-auto rounded-lg bg-background text-white shadow-xl transition-all ease-in-out backdrop:bg-gray-700 backdrop:blur-lg"
+      className="h-[80vh] max-h-[80vh] w-[60vw] self-center justify-self-center overflow-y-auto rounded-lg bg-background text-white shadow-xl transition-all ease-in-out backdrop:bg-gray-700 backdrop:blur-lg"
       hideBackdrop
       onClose={() => setOpen((oldState: any) => !oldState)}
       aria-labelledby="modal-modal-title"
@@ -145,36 +147,47 @@ function MenuModal({ open, setOpen, isEditing = false }: MenuModalProps) {
                     <Divider />
 
                     <FieldArray name="options">
-                      {({ push, remove, }) => (
+                      {({ push, remove }) => (
                         <div>
                           {values.options.map((option, index) => (
-                            <div key={option.id} className="mt-2">
+                            <div key={option.id} className="mt-8">
 
-                              <div className="flex flex-row items-center gap-4">
-                                <TextField
-                                  label="Option Title"
+                              <div className="flex flex-row items-center justify-between gap-4">
+                                <div className="flex flex-row items-center gap-4">
+                                  <TextField
+                                    label="Option Title"
 
-                                  name={`title_${index}`}
-                                  value={option.title}
-                                  onChange={(e) => handleOptionChange(index, 'title', e.target.value)}
+                                    name={`title_${index}`}
+                                    value={option.title}
+                                    onChange={(e) => handleOptionChange(index, 'title', e.target.value)}
 
-                                />
+                                  />
 
-                                <Select
-                                  labelId="response-type-select-label"
-                                  id="respose-type-select"
-                                  name="responseType"
-                                  value={option.menuResponse.responseType}
-                                  label="Tipo da Resposta"
-                                  onChange={handleChange}
-                                >
-                                  <MenuItem value={"article"}>Link</MenuItem>
-                                  <MenuItem value={"text"}>Texto</MenuItem>
-                                </Select>
+                                  <Select
+                                    labelId="response-type-select-label"
+                                    id="respose-type-select"
+                                    name="responseType"
+                                    value={option.menuResponse.responseType}
+                                    label="Tipo da Resposta"
+                                    className="w-24"
+                                    onChange={(e) => handleOptionChange(index, 'responseType', {
+                                      responseType: e.target.value,
+                                    })}
+                                  >
+                                    <MenuItem value={"article"}>Link</MenuItem>
+                                    <MenuItem value={"text"}>Texto</MenuItem>
+                                  </Select>
+                                </div>
+                                <div>
+                                  <button onClick={() => remove(index)}
+                                    className="rounded-xl border border-gray-300 p-1 text-gray-500 hover:bg-gray-400 hover:text-white">
+                                    <Close />
+                                  </button>
+                                </div>
                               </div>
                               {
                                 option.menuResponse.responseType === 'article' ? (
-                                  <div className="mt-4">
+                                  <div >
                                     <TextField
                                       label="Titulo"
                                       name={`options[${index}].menuResponse.content.items[0].title`}
@@ -245,7 +258,9 @@ function MenuModal({ open, setOpen, isEditing = false }: MenuModalProps) {
 
                                 )
                               }
+                              <Divider />
                             </div>
+
                           ))}
                           <Button
                             variant="contained"
