@@ -10,6 +10,8 @@ app.use(logger);
 
 app.use('/webhook', webhookRoutes);
 
+// listen after use
+
 app.listen(config.port, () => {
   console.log(`Server is running on port ${config.port}`);
 })
